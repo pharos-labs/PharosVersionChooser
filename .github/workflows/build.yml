@@ -40,8 +40,7 @@ jobs:
       run: cmake --build . --config Release --target package
 
     - name: Upload Artifact
-      working-directory: build
       uses: actions/upload-artifact@v3
       with:
         name: build
-        path: DesignerVersionChooser*.exe
+        path: build/DesignerVersionChooser*.exe
