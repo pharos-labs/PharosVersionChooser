@@ -1,0 +1,35 @@
+// version.rc.in
+
+1 VERSIONINFO
+ FILEVERSION @VER_MAJOR@,@VER_MINOR@,@VER_PATCH@,@VER_BUILD@
+ PRODUCTVERSION @VER_MAJOR@,@VER_MINOR@,@VER_PATCH@,@VER_BUILD@
+ FILEFLAGSMASK 0x17L
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "080904b0"
+        BEGIN
+            VALUE "Comments", "Designer Version Chooser"
+            VALUE "CompanyName", "Pharos Controls"
+            VALUE "FileDescription", "Tiny application to select Designer versions"
+            VALUE "FileVersion", "@VER_MAJOR@,@VER_MINOR@,@VER_PATCH@,@VER_BUILD@"
+            VALUE "InternalName", ""
+            VALUE "LegalCopyright", "2023 Tom Steer"
+            VALUE "OriginalFilename", "DesignerVersionChooser.exe"
+            VALUE "ProductName", "Designer Version Chooser"
+            VALUE "ProductVersion", "@VER_MAJOR@,@VER_MINOR@,@VER_PATCH@,@VER_BUILD@"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x809, 1200
+    END
+END
