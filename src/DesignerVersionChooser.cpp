@@ -1,6 +1,7 @@
 // DesignerVersionChooser.cpp : Defines the entry point for the application.
 //
 
+#include <windowsx.h>
 #include "framework.h"
 #include "shellapi.h"
 #include "DesignerVersionChooser.h"
@@ -10,6 +11,11 @@
 
 // Enable debugging console output
 // #define DEBUG 1
+
+// Context menu options
+#define IDM_CONTEXT_DEVMODE     1000
+#define IDM_CONTEXT_UNINSTALL   1001
+#define IDM_CONTEXT_REVEAL      1002
 
 // Global Variables:
 HINSTANCE hInst;                                // current instance
@@ -40,18 +46,18 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     LoadStringW(hInstance, IDC_DESIGNERVERSIONCHOOSER, szWindowClass, MAX_LOADSTRING);
     MyRegisterClass(hInstance);
 
-#ifdef DEBUG
+#ifdef _DEBUG
     // Shows debugging console for stdout
     AllocConsole();
     freopen("CONOUT$", "w", stdout);
 #endif
-    
+
     DWORD ticksStart = GetTickCount();
     mList.doSearch();
     DWORD ticksEnd = GetTickCount();
 
     printf("Seach took %d ms", ticksEnd - ticksStart);
-    
+
     // Perform application initialization:
     if (!InitInstance (hInstance, nCmdShow))
     {
@@ -108,11 +114,33 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    return TRUE;
 }
 
-VOID LaunchDesigner()
+VOID LaunchDesigner(bool debugMode)
 {
     int selItem = (INT)SendMessage(hwList, LB_GETCURSEL, 0, 0);
-    std::wstring path = mList.at(selItem).path();
-    ShellExecute(NULL, NULL, path.c_str(), szCommandLine, NULL, 0);
+    std::wstring path = mList.at(selItem).executablePath();
+    std::wstring commandLine;
+    if(debugMode)
+    {
+        commandLine += std::wstring(L"-d ");
+    }
+    commandLine.append(szCommandLine);
+    ShellExecute(NULL, NULL, path.c_str(), commandLine.data(), NULL, 0);
+}
+
+
+VOID UninstallDesigner()
+{
+    int selItem = (INT)SendMessage(hwList, LB_GETCURSEL, 0, 0);
+    std::wstring path = mList.at(selItem).uninstallerPath();
+    ShellExecute(NULL, NULL, path.c_str(), NULL, NULL, 0);
+}
+
+
+VOID ShowInExplorer()
+{
+    int selItem = (INT)SendMessage(hwList, LB_GETCURSEL, 0, 0);
+    std::wstring path = mList.at(selItem).directoryPath();
+    ShellExecute(NULL, L"explore", path.c_str(), NULL, NULL, SW_SHOWNORMAL);
 }
 
 // Message handler for about box.
@@ -154,9 +182,10 @@ INT_PTR CALLBACK MessageHandler(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 
 
     case WM_COMMAND:
+    {
         if (LOWORD(wParam) == IDOK)
         {
-            LaunchDesigner();
+            LaunchDesigner(false);
             EndDialog(hDlg, LOWORD(wParam));
             return (INT_PTR)TRUE;
         }
@@ -165,12 +194,28 @@ INT_PTR CALLBACK MessageHandler(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
             EndDialog(hDlg, LOWORD(wParam));
             return (INT_PTR)TRUE;
         }
-        if (HIWORD(wParam) == LBN_DBLCLK)
+        if (HIWORD(wParam) == LBN_DBLCLK ||
+            (HIWORD(wParam) == 0 && LOWORD(wParam) == IDM_CONTEXT_DEVMODE))
         {
-            LaunchDesigner();
+            auto state = GetKeyState(VK_CONTROL);
+            bool debug = (state == -127) || (HIWORD(wParam) == 0 && LOWORD(wParam) == IDM_CONTEXT_DEVMODE);
+            LaunchDesigner(debug);
             EndDialog(hDlg, LOWORD(wParam));
             return (INT_PTR)TRUE;
         }
+        if (HIWORD(wParam) == 0 && LOWORD(wParam) == IDM_CONTEXT_UNINSTALL)
+        {
+            UninstallDesigner();
+            EndDialog(hDlg, LOWORD(wParam));
+            return (INT_PTR)TRUE;
+        }
+        if (HIWORD(wParam) == 0 && LOWORD(wParam) == IDM_CONTEXT_REVEAL)
+        {
+            ShowInExplorer();
+            EndDialog(hDlg, LOWORD(wParam));
+            return (INT_PTR)TRUE;
+        }
+    }
         break;
 
     case WM_VKEYTOITEM:
@@ -200,6 +245,25 @@ INT_PTR CALLBACK MessageHandler(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
             return -2;
         }
         return -1;
+    }
+
+    case WM_CONTEXTMENU:
+    {
+        INT selItem = (INT)SendMessage(hwList, LB_GETCURSEL, 0, 0);
+        if(selItem < 0)
+        {
+            return FALSE;
+        }
+
+        HMENU hPopupMenu = CreatePopupMenu();
+
+        auto xPos = GET_X_LPARAM(lParam);
+        auto yPos = GET_Y_LPARAM(lParam);
+        InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, IDM_CONTEXT_DEVMODE,   L"Developer Mode");
+        InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, IDM_CONTEXT_UNINSTALL, L"Uninstall");
+        InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, IDM_CONTEXT_REVEAL,    L"Reveal in Explorer");
+        TrackPopupMenu(hPopupMenu, TPM_TOPALIGN | TPM_LEFTALIGN, xPos, yPos, 0, hDlg, NULL);
+        return TRUE;
     }
 
     case WM_DESTROY:

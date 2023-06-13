@@ -4,6 +4,17 @@
 #include <vector>
 #include <map>
 
+#ifdef DESIGNERVERSIONCHOOSER
+	#define EXE_NAME L"pharos_designer.exe"
+#else
+#ifdef EXPERTVERSIONCHOOSER
+	#define EXE_NAME L"pharos_expert.exe"
+#else
+	#error Executable type not defined
+#endif
+#endif
+
+#define UNINSTALL_EXE_NAME L"uninstall.exe"
 
 enum BuildType
 {
@@ -25,17 +36,19 @@ enum BuildType
 class DesignerVersion
 {
 public:
-	DesignerVersion(std::wstring path = std::wstring(), int major = 0, int minor = 0, int patch = 0, int build = 0) : 
+	DesignerVersion(std::wstring path = std::wstring(), int major = 0, int minor = 0, int patch = 0, int build = 0) :
 		m_path(path), m_Major(major), m_Minor(minor), m_Patch(patch), m_Build(build) {};
-	
+
 	const bool operator <(const DesignerVersion& rhs) const;
-	
-	bool isValid() const { return m_Major != 0 && m_Minor != 0; }
+
+	bool isValid() const { return m_Major != 0 || m_Minor != 0 || m_Patch != 0 || m_Build != 0; }
 
 	std::wstring toString() const;
 
 	void setPath(const std::wstring& path) { m_path = path; }
-	std::wstring path() const { return m_path; }
+	std::wstring executablePath() const { return m_path + std::wstring(EXE_NAME); }
+	std::wstring uninstallerPath() const { return m_path + std::wstring(UNINSTALL_EXE_NAME); }
+	std::wstring directoryPath() const { return m_path; }
 private:
 	int m_Major = 0;
 	int m_Minor = 0;

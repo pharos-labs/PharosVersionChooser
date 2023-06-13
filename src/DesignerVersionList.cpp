@@ -15,7 +15,7 @@
 
 DesignerVersion DesignerVersionList::guessDesignerVersionFromCreatedDate(const std::wstring& path)
 {
-    auto fileHandle = 
+    auto fileHandle =
         CreateFile(
         path.c_str(),
         GENERIC_READ,
@@ -25,6 +25,8 @@ DesignerVersion DesignerVersionList::guessDesignerVersionFromCreatedDate(const s
         FILE_ATTRIBUTE_NORMAL,
         NULL
     );
+
+    auto exePath = path + std::wstring(EXE_NAME);
 
     if (fileHandle == INVALID_HANDLE_VALUE)
     {
@@ -115,7 +117,7 @@ std::wstring DesignerVersion::toString() const
 
 DesignerVersionList::DesignerVersionList()
 {
-    
+
 }
 
 void DesignerVersionList::doSearch()
@@ -161,22 +163,22 @@ void DesignerVersionList::searchVersions(std::wstring path, int depth)
             {
                 // Check the filename
                 std::wstring filename(data.cFileName);
-                if (filename == L"pharos_designer.exe")
+                if (filename == EXE_NAME)
                 {
-                    std::wstring targetPath = path.substr(0, path.length() - 2) + std::wstring(L"\\") + filename;
+                    std::wstring targetPath = path.substr(0, path.length() - 2) + std::wstring(L"\\");
                     std::wcout << L"Adding " << targetPath << L"\n";
                     m_paths.push_back(targetPath);
                     break; // No need to dig further in this tree if we found one
                 }
             }
 
-            if (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY && 
+            if (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY &&
                 std::wstring(data.cFileName) != L"." &&
                 std::wstring(data.cFileName) != L"..")
             {
                 if (depth < MAX_DEPTH_TO_SEARCH)
                 {
-                    searchVersions(path.substr(0, path.length()-2) + std::wstring(L"\\") + 
+                    searchVersions(path.substr(0, path.length()-2) + std::wstring(L"\\") +
                         std::wstring(data.cFileName) + std::wstring(L"\\*"),
                         depth + 1);
                 }
@@ -189,14 +191,15 @@ void DesignerVersionList::searchVersions(std::wstring path, int depth)
 
 void DesignerVersionList::getVersionsFromPaths()
 {
-    for (auto path : m_paths)
+    for (const auto path : m_paths)
     {
-        DWORD infoSize = GetFileVersionInfoSize(path.c_str(), 0);
+        std::wstring exePath = path + std::wstring(EXE_NAME);
+        DWORD infoSize = GetFileVersionInfoSize(exePath.c_str(), 0);
 
         LPBYTE infoBuffer = new BYTE[infoSize];
 
         if (!GetFileVersionInfo(
-            path.c_str(),
+            exePath.c_str(),
             0,
             infoSize,
             infoBuffer))
