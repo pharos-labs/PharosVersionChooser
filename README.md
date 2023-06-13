@@ -2,14 +2,14 @@
 
 [![Build](https://github.com/pharos-labs/DesignerVersionChooser/actions/workflows/build.yml/badge.svg)](https://github.com/pharos-labs/DesignerVersionChooser/actions/workflows/build.yml)
 
-DesignerVersionChooser is a very small application which detects copies of Pharos Designer installed on a computer, and provides a simple dialog to select them.
+PharosVersionChooser is a pair of very small applications which detect copies of Pharos Designer or Pharos Expert installed on a (windows) computer, and provides a simple dialog to select them.
 
 ![Screenshot](./doc/screenshot.png)
 
-# How to Use DesignerVersionChooser
+# How to Use PharosVersionChooser
 To use the tool, download the latest installer from the [Releases](https://github.com/pharos-labs/DesignerVersionChooser/releases) page.
 
-Then run the application - a list of detected versions will be shown. You might wish to pin the application to your taskbar or desktop for convenience.
+Then run the application for either Designer or Expert - a list of detected versions will be shown. You might wish to pin the applications to your taskbar or desktop for convenience.
 
 # Building
 The application is built using straight Windows API (no MFC, Qt or other toolkits) in order to keep it as absolutely minimal as possible.
@@ -26,4 +26,4 @@ To build:
 - `cpack -C release` to build the NSIS installer
 
 # About this Pharos Labs Project
-DesignerVersionChooser is designed to interact with Pharos products, but it is not official Pharos Controls software. For challenges using, integrating, compiling, or modifying items in this project, we encourage posting on the Issues page.
+PharosVersionChooser is designed to interact with Pharos products, but it is not official Pharos Controls software. For challenges using, integrating, compiling, or modifying items in this project, we encourage posting on the Issues page.
