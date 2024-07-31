@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.4)
 set(VER_MAJOR 1)
 set(VER_MINOR 0)
 set(VER_PATCH 0)
-set(VER_BUILD 2)
+set(VER_BUILD 3)
 set(APP_VERSION "${VER_MAJOR}.${VER_MINOR}.${VER_PATCH}.${VER_BUILD}")
 
 set(COMPANY_NAME "Pharos Labs")

@@ -3,7 +3,7 @@
 SetCompressor /SOLID lzma
 
 !define PRODUCT_NAME "PharosVersionChooser"
-!define PRODUCT_VERSION "1.0.0.2"
+!define PRODUCT_VERSION "1.0.0.3"
 !define PRODUCT_PUBLISHER "Pharos Labs"
 !define PRODUCT_WEB_SITE "https://github.com/pharos-labs"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\${PRODUCT_NAME}.exe"
