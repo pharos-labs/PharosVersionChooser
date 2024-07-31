@@ -118,13 +118,14 @@ VOID LaunchDesigner(bool debugMode)
 {
     int selItem = (INT)SendMessage(hwList, LB_GETCURSEL, 0, 0);
     std::wstring path = mList.at(selItem).executablePath();
+    std::wstring directory = mList.at(selItem).directoryPath();
     std::wstring commandLine;
     if(debugMode)
     {
         commandLine += std::wstring(L"-d ");
     }
     commandLine.append(szCommandLine);
-    ShellExecute(NULL, NULL, path.c_str(), commandLine.data(), NULL, 0);
+    ShellExecute(NULL, NULL, path.c_str(), commandLine.data(), directory.c_str(), 0);
 }
 
 
