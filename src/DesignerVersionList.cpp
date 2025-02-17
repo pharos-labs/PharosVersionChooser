@@ -191,7 +191,7 @@ void DesignerVersionList::searchVersions(std::wstring path, int depth)
 
 void DesignerVersionList::getVersionsFromPaths()
 {
-    for (const auto path : m_paths)
+    for (const auto &path : m_paths)
     {
         std::wstring exePath = path + std::wstring(EXE_NAME);
         DWORD infoSize = GetFileVersionInfoSize(exePath.c_str(), 0);
