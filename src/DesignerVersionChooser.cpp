@@ -125,7 +125,7 @@ VOID LaunchDesigner(bool debugMode)
         commandLine += std::wstring(L"-d ");
     }
     commandLine.append(szCommandLine);
-    ShellExecute(NULL, NULL, path.c_str(), commandLine.data(), directory.c_str(), 0);
+    ShellExecute(NULL, NULL, path.c_str(), commandLine.data(), directory.c_str(), SW_NORMAL);
 }
 
 
@@ -133,7 +133,7 @@ VOID UninstallDesigner()
 {
     int selItem = (INT)SendMessage(hwList, LB_GETCURSEL, 0, 0);
     std::wstring path = mList.at(selItem).uninstallerPath();
-    ShellExecute(NULL, NULL, path.c_str(), NULL, NULL, 0);
+    ShellExecute(NULL, NULL, path.c_str(), NULL, NULL, SW_NORMAL);
 }
 
 
