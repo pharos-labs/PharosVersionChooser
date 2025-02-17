@@ -56,7 +56,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     mList.doSearch();
     DWORD ticksEnd = GetTickCount();
 
-    printf("Seach took %d ms", ticksEnd - ticksStart);
+    printf("Seach took %lu ms", ticksEnd - ticksStart);
 
     // Perform application initialization:
     if (!InitInstance (hInstance, nCmdShow))
