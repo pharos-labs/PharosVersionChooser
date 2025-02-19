@@ -39,7 +39,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 {
     UNREFERENCED_PARAMETER(hPrevInstance);
 
-    wcscpy(szCommandLine, lpCmdLine);
+    wcscpy_s(szCommandLine, MAX_PATH, lpCmdLine);
 
     // Initialize global strings
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
