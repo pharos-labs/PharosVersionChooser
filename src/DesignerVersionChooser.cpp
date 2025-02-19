@@ -49,7 +49,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 #ifdef _DEBUG
     // Shows debugging console for stdout
     AllocConsole();
-    freopen("CONOUT$", "w", stdout);
+    FILE* pConOut {nullptr};
+    freopen_s(&pConOut, "CONOUT$", "w", stdout);
 #endif
 
     DWORD ticksStart = GetTickCount();
@@ -63,6 +64,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     {
         return FALSE;
     }
+
+#ifdef _DEBUG
+    if (pConOut)
+    {
+        fclose(pConOut);
+    }
+#endif
 
     return 0;
 }
