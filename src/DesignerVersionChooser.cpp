@@ -147,132 +147,179 @@ VOID ShowInExplorer()
     ShellExecute(NULL, L"explore", path.c_str(), NULL, NULL, SW_SHOWNORMAL);
 }
 
-// Message handler for about box.
+// Message handler for dialog
 INT_PTR CALLBACK MessageHandler(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    UNREFERENCED_PARAMETER(lParam);
     switch (message)
     {
-    case WM_INITDIALOG:
-    {
-        // Add items to list.
-        hwList = GetDlgItem(hDlg, IDC_LIST1);
+        case WM_INITDIALOG:
+        {
 
-        int index = 0;
-        for (auto i : mList)
-        {
-            int pos = (int)SendMessage(hwList, LB_ADDSTRING, 0,
-                (LPARAM)i.toString().c_str());
-            // The item data is the position in the map
-            SendMessage(hwList, LB_SETITEMDATA, pos, (LPARAM)index);
-        }
-        // Set input focus to the list box.
-        SetFocus(hwList);
+            // Add items to list.
+            hwList = GetDlgItem(hDlg, IDC_LIST1);
 
-        // Select the first (newest) version
-        SendMessage(hwList, LB_SETSEL, TRUE, 0);
-
-        // Center the window on the screen
-        int xWidth = GetSystemMetrics(SM_CXSCREEN);
-        int yWidth = GetSystemMetrics(SM_CYSCREEN);
-        RECT rect;
-        GetWindowRect(hDlg, &rect);
-        SetWindowPos(hDlg, NULL,
-            xWidth / 2 - (rect.right - rect.left) / 2,
-            yWidth / 2 - (rect.bottom - rect.top) / 2,
-            -1, -1, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
-        return FALSE; // False ensures focus maintained on the listbox
-    }
-
-
-    case WM_COMMAND:
-    {
-        if (LOWORD(wParam) == IDOK)
-        {
-            LaunchDesigner(false);
-            EndDialog(hDlg, LOWORD(wParam));
-            return (INT_PTR)TRUE;
-        }
-        if (LOWORD(wParam) == IDCANCEL)
-        {
-            EndDialog(hDlg, LOWORD(wParam));
-            return (INT_PTR)TRUE;
-        }
-        if (HIWORD(wParam) == LBN_DBLCLK ||
-            (HIWORD(wParam) == 0 && LOWORD(wParam) == IDM_CONTEXT_DEVMODE))
-        {
-            auto state = GetKeyState(VK_CONTROL);
-            bool debug = (state == -127) || (HIWORD(wParam) == 0 && LOWORD(wParam) == IDM_CONTEXT_DEVMODE);
-            LaunchDesigner(debug);
-            EndDialog(hDlg, LOWORD(wParam));
-            return (INT_PTR)TRUE;
-        }
-        if (HIWORD(wParam) == 0 && LOWORD(wParam) == IDM_CONTEXT_UNINSTALL)
-        {
-            UninstallDesigner();
-            EndDialog(hDlg, LOWORD(wParam));
-            return (INT_PTR)TRUE;
-        }
-        if (HIWORD(wParam) == 0 && LOWORD(wParam) == IDM_CONTEXT_REVEAL)
-        {
-            ShowInExplorer();
-            EndDialog(hDlg, LOWORD(wParam));
-            return (INT_PTR)TRUE;
-        }
-    }
-        break;
-
-    case WM_VKEYTOITEM:
-    {
-        INT selItem = (INT)SendMessage(hwList, LB_GETCURSEL, 0, 0);
-        INT count = (INT)SendMessage(hwList, LB_GETCOUNT, 0, 0);
-        if (LOWORD(wParam) == VK_UP)
-        {
-            // Up key pressed
-            selItem--;
-            if (selItem < 0)
+            int index = 0;
+            for (auto i : mList)
             {
-                selItem = count - 1;
+                const auto pos = static_cast<int>(SendMessage(hwList, LB_ADDSTRING, 0,
+                    reinterpret_cast<LPARAM>(i.toString().c_str())));
+                // The item data is the position in the map
+                SendMessage(hwList, LB_SETITEMDATA, pos, static_cast<LPARAM>(index));
             }
-            SendMessage(hwList, LB_SETCURSEL, (WPARAM)selItem, 0);
-            return -2;
+            // Set input focus to the list box.
+            SetFocus(hwList);
+
+            // Select the first (newest) version
+            SendMessage(hwList, LB_SETSEL, TRUE, 0);
+
+            // Center the window on the screen
+            const auto xWidth = GetSystemMetrics(SM_CXSCREEN);
+            const auto yWidth = GetSystemMetrics(SM_CYSCREEN);
+            RECT rect;
+            GetWindowRect(hDlg, &rect);
+            SetWindowPos(hDlg, NULL,
+                xWidth / 2 - (rect.right - rect.left) / 2,
+                yWidth / 2 - (rect.bottom - rect.top) / 2,
+                -1, -1, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+            return FALSE; // False ensures focus maintained on the listbox
         }
-        if (LOWORD(wParam) == VK_DOWN)
+
+        case WM_COMMAND:
         {
-            // Down key pressed
-            selItem++;
-            if (selItem > count - 1)
+            const auto wmId = LOWORD(wParam);
+            const auto wmEvent = HIWORD(wParam);
+            const auto hWnd = reinterpret_cast<HWND>(lParam);
+
+            // List box
+            if (hWnd == hwList)
             {
-                selItem = 0;
+                switch (wmEvent)
+                {
+                    default: return static_cast<INT_PTR>(FALSE);
+
+                    case LBN_DBLCLK:
+                    {
+                        const bool debug = (GetKeyState(VK_CONTROL) & 0x8000); // Control held down
+                        LaunchDesigner(debug);
+                        EndDialog(hDlg, LOWORD(wParam));
+                        return static_cast<INT_PTR>(TRUE);
+                    }
+                }
             }
-            SendMessage(hwList, LB_SETCURSEL, (WPARAM)selItem, 0);
-            return -2;
-        }
-        return -1;
-    }
 
-    case WM_CONTEXTMENU:
-    {
-        INT selItem = (INT)SendMessage(hwList, LB_GETCURSEL, 0, 0);
-        if(selItem < 0)
+            switch (wmId)
+            {
+                default: return static_cast<INT_PTR>(FALSE);
+
+                case IDOK:
+                {
+                    LaunchDesigner(false);
+                    EndDialog(hDlg, wmId);
+                    return static_cast<INT_PTR>(TRUE);
+                }
+
+                case IDCANCEL:
+                {
+                    EndDialog(hDlg, wmId);
+                    return static_cast<INT_PTR>(TRUE);
+                }
+
+                case IDM_CONTEXT_DEVMODE:
+                {
+                    if (wmEvent == 0)
+                    {
+                        LaunchDesigner(true);
+                        EndDialog(hDlg, LOWORD(wParam));
+                        return static_cast<INT_PTR>(TRUE);
+                    }
+                    return static_cast<INT_PTR>(FALSE);
+                }
+
+                case IDM_CONTEXT_UNINSTALL:
+                {
+                    if (wmEvent == 0)
+                    {
+                        UninstallDesigner();
+                        EndDialog(hDlg, wmId);
+                        return static_cast<INT_PTR>(TRUE);
+                    }
+                    return static_cast<INT_PTR>(FALSE);
+                }
+
+                case IDM_CONTEXT_REVEAL:
+                {
+                    if (wmEvent == 0)
+                    {
+                        ShowInExplorer();
+                        EndDialog(hDlg, wmId);
+                        return static_cast<INT_PTR>(TRUE);
+                    }
+                    return static_cast<INT_PTR>(FALSE);
+                }
+            }
+        }
+
+        case WM_VKEYTOITEM:
         {
-            return FALSE;
+            constexpr INT_PTR retDefaultAction = -1; // The list box should perform the default action in response to the keystroke
+            constexpr INT_PTR retAllHandled = -2; // The application handled all aspects of selecting the item
+
+            auto selItem = static_cast<INT>(SendMessage(hwList, LB_GETCURSEL, 0, 0));
+            const auto count = static_cast<INT>(SendMessage(hwList, LB_GETCOUNT, 0, 0));
+
+            switch (LOWORD(wParam))
+            {
+                default: return retDefaultAction;
+
+                case VK_UP: // Up key pressed
+                {
+                    selItem--;
+                    if (selItem < 0)
+                    {
+                        selItem = (count - 1);
+                    }
+                    SendMessage(hwList, LB_SETCURSEL, static_cast<WPARAM>(selItem), 0);
+                    return retAllHandled;
+                }
+
+                case VK_DOWN: // Down key pressed
+                {
+                    selItem++;
+                    if (selItem > (count - 1))
+                    {
+                        selItem = 0;
+                    }
+                    SendMessage(hwList, LB_SETCURSEL, static_cast<WPARAM>(selItem), 0);
+                    return retAllHandled;
+                }
+            }
         }
 
-        HMENU hPopupMenu = CreatePopupMenu();
+        case WM_CONTEXTMENU:
+        {
+            const auto selItem = static_cast<INT>(SendMessage(hwList, LB_GETCURSEL, 0, 0));
+            if(selItem < 0)
+            {
+                return static_cast<INT_PTR>(FALSE);
+            }
 
-        auto xPos = GET_X_LPARAM(lParam);
-        auto yPos = GET_Y_LPARAM(lParam);
-        InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, IDM_CONTEXT_DEVMODE,   L"Developer Mode");
-        InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, IDM_CONTEXT_UNINSTALL, L"Uninstall");
-        InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, IDM_CONTEXT_REVEAL,    L"Reveal in Explorer");
-        TrackPopupMenu(hPopupMenu, TPM_TOPALIGN | TPM_LEFTALIGN, xPos, yPos, 0, hDlg, NULL);
-        return TRUE;
-    }
+            HMENU hPopupMenu = CreatePopupMenu();
 
-    case WM_DESTROY:
-        PostQuitMessage(0);
-        return TRUE;
+            auto xPos = GET_X_LPARAM(lParam);
+            auto yPos = GET_Y_LPARAM(lParam);
+            InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, IDM_CONTEXT_DEVMODE,   L"Developer Mode");
+            InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, IDM_CONTEXT_UNINSTALL, L"Uninstall");
+            InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, IDM_CONTEXT_REVEAL,    L"Reveal in Explorer");
+            TrackPopupMenu(hPopupMenu, TPM_TOPALIGN | TPM_LEFTALIGN, xPos, yPos, 0, hDlg, NULL);
+            return static_cast<INT_PTR>(TRUE);
+        }
+
+        case WM_DESTROY:
+        {
+            PostQuitMessage(0);
+            return static_cast<INT_PTR>(TRUE);
+        }
+
     }
-    return (INT_PTR)FALSE;
+    return static_cast<INT_PTR>(FALSE);
 }
