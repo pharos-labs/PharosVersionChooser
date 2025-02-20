@@ -114,18 +114,21 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    return TRUE;
 }
 
-VOID LaunchDesigner(bool debugMode)
+VOID LaunchDesigner(const bool debugMode)
 {
-    int selItem = (INT)SendMessage(hwList, LB_GETCURSEL, 0, 0);
-    std::wstring path = mList.at(selItem).executablePath();
-    std::wstring directory = mList.at(selItem).directoryPath();
-    std::wstring commandLine;
-    if(debugMode)
+    const auto selItem = static_cast<INT>(SendMessage(hwList, LB_GETCURSEL, 0, 0));
+    if ((selItem >= 0) && (mList.size() > selItem))
     {
-        commandLine += std::wstring(L"-d ");
+        const auto path = mList.at(selItem).executablePath();
+        const auto directory = mList.at(selItem).directoryPath();
+        std::wstring commandLine;
+        if (debugMode)
+        {
+            commandLine += std::wstring(L"-d ");
+        }
+        commandLine.append(szCommandLine);
+        ShellExecute(NULL, NULL, path.c_str(), commandLine.data(), directory.c_str(), SW_NORMAL);
     }
-    commandLine.append(szCommandLine);
-    ShellExecute(NULL, NULL, path.c_str(), commandLine.data(), directory.c_str(), SW_NORMAL);
 }
 
 
