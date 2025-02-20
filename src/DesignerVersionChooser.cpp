@@ -39,7 +39,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 {
     UNREFERENCED_PARAMETER(hPrevInstance);
 
-    wcscpy(szCommandLine, lpCmdLine);
+    wcscpy_s(szCommandLine, MAX_PATH, lpCmdLine);
 
     // Initialize global strings
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
@@ -49,20 +49,28 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 #ifdef _DEBUG
     // Shows debugging console for stdout
     AllocConsole();
-    freopen("CONOUT$", "w", stdout);
+    FILE* pConOut {nullptr};
+    freopen_s(&pConOut, "CONOUT$", "w", stdout);
 #endif
 
     DWORD ticksStart = GetTickCount();
     mList.doSearch();
     DWORD ticksEnd = GetTickCount();
 
-    printf("Seach took %d ms", ticksEnd - ticksStart);
+    printf("Seach took %lu ms", ticksEnd - ticksStart);
 
     // Perform application initialization:
     if (!InitInstance (hInstance, nCmdShow))
     {
         return FALSE;
     }
+
+#ifdef _DEBUG
+    if (pConOut)
+    {
+        fclose(pConOut);
+    }
+#endif
 
     return 0;
 }

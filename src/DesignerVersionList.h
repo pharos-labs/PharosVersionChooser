@@ -37,7 +37,7 @@ class DesignerVersion
 {
 public:
 	DesignerVersion(std::wstring path = std::wstring(), int major = 0, int minor = 0, int patch = 0, int build = 0) :
-		m_path(path), m_Major(major), m_Minor(minor), m_Patch(patch), m_Build(build) {};
+		m_Major(major), m_Minor(minor), m_Patch(patch), m_Build(build), m_path(path) {};
 
 	const bool operator <(const DesignerVersion& rhs) const;
 
