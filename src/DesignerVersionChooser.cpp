@@ -154,6 +154,8 @@ INT_PTR CALLBACK MessageHandler(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
     {
         case WM_INITDIALOG:
         {
+            // Disable ok button
+            EnableWindow(GetDlgItem(hDlg, IDOK), false);
 
             // Add items to list.
             hwList = GetDlgItem(hDlg, IDC_LIST1);
@@ -202,6 +204,14 @@ INT_PTR CALLBACK MessageHandler(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
                         const bool debug = (GetKeyState(VK_CONTROL) & 0x8000); // Control held down
                         LaunchDesigner(debug);
                         EndDialog(hDlg, LOWORD(wParam));
+                        return static_cast<INT_PTR>(TRUE);
+                    }
+
+                    case LBN_SELCHANGE:
+                    {
+                        // Enable OK button only if something is selected
+                        const auto selItem = static_cast<INT>(SendMessage(hwList, LB_GETCURSEL, 0, 0));
+                        EnableWindow(GetDlgItem(hDlg, IDOK), (selItem >= 0));
                         return static_cast<INT_PTR>(TRUE);
                     }
                 }
@@ -279,6 +289,7 @@ INT_PTR CALLBACK MessageHandler(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
                         selItem = (count - 1);
                     }
                     SendMessage(hwList, LB_SETCURSEL, static_cast<WPARAM>(selItem), 0);
+                    EnableWindow(GetDlgItem(hDlg, IDOK), (selItem >= 0));
                     return retAllHandled;
                 }
 
@@ -290,6 +301,7 @@ INT_PTR CALLBACK MessageHandler(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
                         selItem = 0;
                     }
                     SendMessage(hwList, LB_SETCURSEL, static_cast<WPARAM>(selItem), 0);
+                    EnableWindow(GetDlgItem(hDlg, IDOK), (selItem >= 0));
                     return retAllHandled;
                 }
             }
