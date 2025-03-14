@@ -15,6 +15,7 @@
 #endif
 
 #define UNINSTALL_EXE_NAME L"uninstall.exe"
+#define RECOVERY_EXE_NAME L"pharos_recovery_tool.exe"
 
 enum BuildType
 {
@@ -48,6 +49,7 @@ public:
 	void setPath(const std::wstring& path) { m_path = path; }
 	std::wstring executablePath() const { return m_path + std::wstring(EXE_NAME); }
 	std::wstring uninstallerPath() const { return m_path + std::wstring(UNINSTALL_EXE_NAME); }
+	std::wstring recoveryToolPath() const { return m_path + std::wstring(RECOVERY_EXE_NAME); }
 	std::wstring directoryPath() const { return m_path; }
 private:
 	int m_Major = 0;

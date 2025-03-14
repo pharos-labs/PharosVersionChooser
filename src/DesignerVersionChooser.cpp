@@ -16,6 +16,7 @@
 #define IDM_CONTEXT_DEVMODE     1000
 #define IDM_CONTEXT_UNINSTALL   1001
 #define IDM_CONTEXT_REVEAL      1002
+#define IDM_CONTEXT_RECOVERY    1003
 
 // Global Variables:
 HINSTANCE hInst;                                // current instance
@@ -139,6 +140,15 @@ VOID LaunchDesigner(const bool debugMode)
     }
 }
 
+VOID LaunchRecoveryTool()
+{
+    const auto selItem = static_cast<INT>(SendMessage(hwList, LB_GETCURSEL, 0, 0));
+    if ((selItem >= 0) && (mList.size() > selItem))
+    {
+        const auto path = mList.at(selItem).recoveryToolPath();
+        ShellExecute(NULL, NULL, path.c_str(), NULL, NULL, SW_SHOWNORMAL);
+    }
+}
 
 VOID UninstallDesigner()
 {
@@ -274,6 +284,17 @@ INT_PTR CALLBACK MessageHandler(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
                     }
                     return static_cast<INT_PTR>(FALSE);
                 }
+
+                case IDM_CONTEXT_RECOVERY:
+                {
+                    if (wmEvent == 0)
+                    {
+                        LaunchRecoveryTool();
+                        EndDialog(hDlg, LOWORD(wParam));
+                        return static_cast<INT_PTR>(TRUE);
+                    }
+                    return static_cast<INT_PTR>(FALSE);
+                }
             }
         }
 
@@ -330,6 +351,9 @@ INT_PTR CALLBACK MessageHandler(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
             InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, IDM_CONTEXT_DEVMODE,   L"Developer Mode");
             InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, IDM_CONTEXT_UNINSTALL, L"Uninstall");
             InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, IDM_CONTEXT_REVEAL,    L"Reveal in Explorer");
+#ifdef DESIGNERVERSIONCHOOSER
+            InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, IDM_CONTEXT_RECOVERY, L"Recovery Tool");
+#endif
             TrackPopupMenu(hPopupMenu, TPM_TOPALIGN | TPM_LEFTALIGN, xPos, yPos, 0, hDlg, NULL);
             return static_cast<INT_PTR>(TRUE);
         }
