@@ -31,6 +31,8 @@ DesignerVersionList mList;
 ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
+
+// Message handler
 INT_PTR CALLBACK    MessageHandler(HWND, UINT, WPARAM, LPARAM);
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
@@ -42,8 +44,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     wcscpy_s(szCommandLine, MAX_PATH, lpCmdLine);
 
+#ifdef MOSAICVERSIONCHOOSER
+    // Set a custom app title for the Mosaic build
+    wcscpy_s(szTitle, MAX_LOADSTRING, L"MosaicDesignerVersionChooser");
+#else
     // Initialize global strings
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
+#endif
     LoadStringW(hInstance, IDC_DESIGNERVERSIONCHOOSER, szWindowClass, MAX_LOADSTRING);
     MyRegisterClass(hInstance);
 
@@ -77,11 +84,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 }
 
 
-
 //
 //  FUNCTION: MyRegisterClass()
 //
 //  PURPOSE: Registers the window class.
+//
 //
 ATOM MyRegisterClass(HINSTANCE hInstance)
 {
@@ -169,6 +176,7 @@ VOID UninstallDesigner()
     std::wstring path = mList.at(selItem).uninstallerPath();
     LaunchProcess(path);
 }
+
 
 
 VOID ShowInExplorer()

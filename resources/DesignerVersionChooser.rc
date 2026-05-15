@@ -31,6 +31,9 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #ifdef EXPERTVERSIONCHOOSER
     IDI_DESIGNERVERSIONCHOOSER  ICON                    "ExpertVersionChooser.ico"
     IDI_SMALL                   ICON                    "small.ico"
+#elif MOSAICVERSIONCHOOSER
+    IDI_DESIGNERVERSIONCHOOSER  ICON                    "MosaicVersionChooser.ico"
+    IDI_SMALL                   ICON                    "small.ico"
 #else
     IDI_DESIGNERVERSIONCHOOSER  ICON                    "DesignerVersionChooser.ico"
     IDI_SMALL                   ICON                    "small.ico"
@@ -171,9 +174,11 @@ END
 IDD_DIALOG1 DIALOGEX 0, 0, 230, 150
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 #ifdef DESIGNERVERSIONCHOOSER
-CAPTION "Designer Version Chooser"
+    CAPTION "Pharos Designer Version Chooser"
+#elif defined(MOSAICVERSIONCHOOSER)
+    CAPTION "Mosaic Designer Version Chooser"
 #else
-CAPTION "Expert Version Chooser"
+    CAPTION "Expert Version Chooser"
 #endif
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN

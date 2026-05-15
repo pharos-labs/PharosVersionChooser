@@ -6,12 +6,12 @@
 
 #ifdef DESIGNERVERSIONCHOOSER
 	#define EXE_NAME L"pharos_designer.exe"
-#else
-#ifdef EXPERTVERSIONCHOOSER
+#elif defined(EXPERTVERSIONCHOOSER)
 	#define EXE_NAME L"pharos_expert.exe"
+#elif defined(MOSAICVERSIONCHOOSER)
+	#define EXE_NAME L"mosaic_designer.exe"
 #else
 	#error Executable type not defined
-#endif
 #endif
 
 #define UNINSTALL_EXE_NAME L"uninstall.exe"

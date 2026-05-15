@@ -123,6 +123,28 @@ DesignerVersionList::DesignerVersionList()
 void DesignerVersionList::doSearch()
 {
     TCHAR pf[MAX_PATH];
+
+#ifdef MOSAICVERSIONCHOOSER
+    // For Mosaic builds, search under "%ProgramFiles%\ETC\Mosaic\*" and "%ProgramFiles(x86)%\ETC\Mosaic\*"
+    SHGetSpecialFolderPath(
+        0,
+        pf,
+        CSIDL_PROGRAM_FILES,
+        FALSE);
+
+    std::wstring searchPath = std::wstring(pf) + std::wstring(L"\\ETC\\Mosaic\\*");
+    searchVersions(searchPath.c_str());
+
+    SHGetSpecialFolderPath(
+        0,
+        pf,
+        CSIDL_PROGRAM_FILESX86,
+        FALSE);
+
+    searchPath = std::wstring(pf) + std::wstring(L"\\ETC\\Mosaic\\*");
+    searchVersions(searchPath.c_str());
+#else
+    // Existing behaviour: search for Pharos Controls in Program Files and Program Files (x86)
     SHGetSpecialFolderPath(
         0,
         pf,
@@ -140,6 +162,7 @@ void DesignerVersionList::doSearch()
 
     searchPath = std::wstring(pf) + std::wstring(L"\\Pharos Controls\\*");
     searchVersions(searchPath.c_str());
+#endif
 
     getVersionsFromPaths();
 
@@ -149,7 +172,7 @@ void DesignerVersionList::doSearch()
 
 void DesignerVersionList::searchVersions(std::wstring path, int depth)
 {
-    // Recursively search for files called pharos_designer.exe
+    // Recursively search for files called pharos_designer.exe (or whatever EXE_NAME is)
     std::wcout << L"Searching path " << path << L"\n";
     WIN32_FIND_DATA data;
     HANDLE hFind = FindFirstFile(path.c_str(), &data);
