@@ -26,7 +26,7 @@ DesignerVersion DesignerVersionList::guessDesignerVersionFromCreatedDate(const s
         NULL
     );
 
-    auto exePath = path + std::wstring(EXE_NAME);
+    auto exePath = path;
 
     if (fileHandle == INVALID_HANDLE_VALUE)
     {
@@ -186,9 +186,9 @@ void DesignerVersionList::searchVersions(std::wstring path, int depth)
             {
                 // Check the filename
                 std::wstring filename(data.cFileName);
-                if (filename == EXE_NAME)
+                if (std::find(exe_names.begin(), exe_names.end(), filename) != exe_names.end())
                 {
-                    std::wstring targetPath = path.substr(0, path.length() - 2) + std::wstring(L"\\");
+                    std::wstring targetPath = path.substr(0, path.length() - 2) + std::wstring(L"\\") + filename;
                     std::wcout << L"Adding " << targetPath << L"\n";
                     m_paths.push_back(targetPath);
                     break; // No need to dig further in this tree if we found one
@@ -216,7 +216,7 @@ void DesignerVersionList::getVersionsFromPaths()
 {
     for (const auto &path : m_paths)
     {
-        std::wstring exePath = path + std::wstring(EXE_NAME);
+        std::wstring exePath = path;
         DWORD infoSize = GetFileVersionInfoSize(exePath.c_str(), 0);
 
         LPBYTE infoBuffer = new BYTE[infoSize];
