@@ -96,13 +96,13 @@ Section "Main Application" sec01
 SetOutPath '$INSTDIR'
 
 File "..\..\..\Release\DesignerVersionChooser.exe"
-File "..\..\..\Release\ExpertVersionChooser.exe"
+File "..\..\..\Release\ExpressVersionChooser.exe"
 File "..\..\..\Release\MosaicVersionChooser.exe"
 
 ;Shortcuts
 CreateDirectory '$SMPROGRAMS\${PRODUCT_NAME}'
 CreateShortcut '$SMPROGRAMS\DesignerVersionChooser.lnk' '$INSTDIR\DesignerVersionChooser.exe'
-CreateShortcut '$SMPROGRAMS\ExpertVersionChooser.lnk' '$INSTDIR\ExpertVersionChooser.exe'
+CreateShortcut '$SMPROGRAMS\ExpressVersionChooser.lnk' '$INSTDIR\ExpressVersionChooser.exe'
 CreateShortcut '$SMPROGRAMS\MosaicVersionChooser.lnk' '$INSTDIR\MosaicVersionChooser.exe'
 
 WriteRegStr ${INSTDIR_REG_ROOT} "${INSTDIR_REG_KEY}" "InstallDir" "$INSTDIR"
@@ -134,7 +134,7 @@ SectionEnd
 Section UnInstall
 
     Delete "$INSTDIR\DesignerVersionChooser.exe"
-    Delete "$INSTDIR\ExpertVersionChooser.exe"
+    Delete "$INSTDIR\ExpressVersionChooser.exe"
 	Delete "$INSTDIR\MosaicVersionChooser.exe"
     Delete "$INSTDIR\${UNINST_EXE}"
     RmDir "$INSTDIR"

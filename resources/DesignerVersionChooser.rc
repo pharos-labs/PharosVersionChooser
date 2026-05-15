@@ -28,8 +28,8 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // Icon
 //
 
-#ifdef EXPERTVERSIONCHOOSER
-    IDI_DESIGNERVERSIONCHOOSER  ICON                    "ExpertVersionChooser.ico"
+#ifdef EXPRESSVERSIONCHOOSER
+    IDI_DESIGNERVERSIONCHOOSER  ICON                    "ExpressVersionChooser.ico"
     IDI_SMALL                   ICON                    "small.ico"
 #elif MOSAICVERSIONCHOOSER
     IDI_DESIGNERVERSIONCHOOSER  ICON                    "MosaicVersionChooser.ico"
@@ -178,7 +178,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 #elif defined(MOSAICVERSIONCHOOSER)
     CAPTION "Mosaic Designer Version Chooser"
 #else
-    CAPTION "Expert Version Chooser"
+    CAPTION "Express Version Chooser"
 #endif
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN

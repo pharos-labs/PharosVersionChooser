@@ -39,19 +39,19 @@ target_include_directories(DesignerVersionChooser PRIVATE
 target_compile_definitions(DesignerVersionChooser PRIVATE DESIGNERVERSIONCHOOSER)
 
 # Source Files
-add_executable(ExpertVersionChooser WIN32
+add_executable(ExpressVersionChooser WIN32
     src/DesignerVersionChooser.cpp
 	src/DesignerVersionList.cpp
     resources/DesignerVersionChooser.rc
     resources/DesignerVersionChooser.exe.manifest
     )
 
-target_include_directories(ExpertVersionChooser PRIVATE
+target_include_directories(ExpressVersionChooser PRIVATE
     src
     resources
     )
 
-target_compile_definitions(ExpertVersionChooser PRIVATE EXPERTVERSIONCHOOSER)
+target_compile_definitions(ExpressVersionChooser PRIVATE EXPRESSVERSIONCHOOSER)
 
 # Mosaic target
 add_executable(MosaicVersionChooser WIN32
@@ -71,13 +71,13 @@ target_compile_definitions(MosaicVersionChooser PRIVATE MOSAICVERSIONCHOOSER)
 if(MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS -D_UNICODE -DUNICODE)
     set_target_properties(DesignerVersionChooser PROPERTIES COMPILE_FLAGS "/Zc:wchar_t")
-    set_target_properties(ExpertVersionChooser PROPERTIES COMPILE_FLAGS "/Zc:wchar_t")
+    set_target_properties(ExpressVersionChooser PROPERTIES COMPILE_FLAGS "/Zc:wchar_t")
     set_target_properties(MosaicVersionChooser PROPERTIES COMPILE_FLAGS "/Zc:wchar_t")
 endif()
 
 # The ComCtl32 library modernizes UI to vista style
 target_link_libraries(DesignerVersionChooser PUBLIC Version ComCtl32)
-target_link_libraries(ExpertVersionChooser PUBLIC Version ComCtl32)
+target_link_libraries(ExpressVersionChooser PUBLIC Version ComCtl32)
 target_link_libraries(MosaicVersionChooser PUBLIC Version ComCtl32)
 
 # Override the default NSIS template with our own
