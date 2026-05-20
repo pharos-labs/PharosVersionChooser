@@ -24,3 +24,6 @@ To build:
 - `cmake ..\` to configure
 - `cmake --build . --config Release` to build a release binary
 - `cpack -C release` to build the NSIS installer
+
+# About this Pharos Labs Project
+PharosVersionChooser is designed to interact with Pharos products, but it is not official Pharos Controls software. For challenges using, integrating, compiling, or modifying items in this project, we encourage posting on the Issues page.
