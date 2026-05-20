@@ -3,13 +3,14 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <array>
 
 #ifdef DESIGNERVERSIONCHOOSER
-	#define EXE_NAME L"pharos_designer.exe"
-#elif defined(EXPERTVERSIONCHOOSER)
-	#define EXE_NAME L"pharos_expert.exe"
+	static constexpr std::array exe_names = {L"pharos_designer.exe"};
+#elif defined(EXPRESSVERSIONCHOOSER)
+	static constexpr std::array exe_names = {L"pharos_express.exe", L"pharos_expert.exe"};
 #elif defined(MOSAICVERSIONCHOOSER)
-	#define EXE_NAME L"mosaic_designer.exe"
+	static constexpr std::array exe_names = {L"mosaic_designer.exe"};
 #else
 	#error Executable type not defined
 #endif
@@ -47,7 +48,8 @@ public:
 	std::wstring toString() const;
 
 	void setPath(const std::wstring& path) { m_path = path; }
-	std::wstring executablePath() const { return m_path + std::wstring(EXE_NAME); }
+	void setExeName(const std::wstring& exeName) { m_exeName = exeName;  }
+	std::wstring executablePath() const { return m_path + m_exeName; }
 	std::wstring uninstallerPath() const { return m_path + std::wstring(UNINSTALL_EXE_NAME); }
 	std::wstring recoveryToolPath() const { return m_path + std::wstring(RECOVERY_EXE_NAME); }
 	std::wstring directoryPath() const { return m_path; }
@@ -57,6 +59,7 @@ private:
 	int m_Patch = 0;
 	int m_Build = 0;
 	std::wstring m_path;
+	std::wstring m_exeName;
 };
 
 class DesignerVersionList : public std::vector<DesignerVersion>
