@@ -61,3 +61,5 @@ src/version.h
 /resources/RCb00500
 /resources/version.aps
 /resources/version.rc
+/CMakeSettings.json
+/notes

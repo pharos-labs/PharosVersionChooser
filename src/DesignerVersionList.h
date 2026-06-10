@@ -16,7 +16,12 @@
 #endif
 
 #define UNINSTALL_EXE_NAME L"uninstall.exe"
-#define RECOVERY_EXE_NAME L"pharos_recovery_tool.exe"
+
+#ifdef MOSAICVERSIONCHOOSER
+	#define RECOVERY_EXE_NAME L"mosaic_recovery_tool.exe"
+#else
+	#define RECOVERY_EXE_NAME L"pharos_recovery_tool.exe"
+#endif
 
 enum BuildType
 {
