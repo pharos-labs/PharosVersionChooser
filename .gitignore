@@ -56,3 +56,8 @@ build/
 
 # CMake generated version header
 src/version.h
+/.vs
+/resources/RCa00500
+/resources/RCb00500
+/resources/version.aps
+/resources/version.rc
