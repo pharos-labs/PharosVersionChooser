@@ -16,7 +16,12 @@
 #endif
 
 #define UNINSTALL_EXE_NAME L"uninstall.exe"
-#define RECOVERY_EXE_NAME L"pharos_recovery_tool.exe"
+
+#ifdef MOSAICVERSIONCHOOSER
+	#define RECOVERY_EXE_NAME L"mosaic_recovery_tool.exe"
+#else
+	#define RECOVERY_EXE_NAME L"pharos_recovery_tool.exe"
+#endif
 
 enum BuildType
 {
@@ -50,9 +55,9 @@ public:
 	void setPath(const std::wstring& path) { m_path = path; }
 	void setExeName(const std::wstring& exeName) { m_exeName = exeName;  }
 	std::wstring executablePath() const { return m_path + m_exeName; }
-	std::wstring uninstallerPath() const { return m_path + std::wstring(UNINSTALL_EXE_NAME); }
-	std::wstring recoveryToolPath() const { return m_path + std::wstring(RECOVERY_EXE_NAME); }
-	std::wstring directoryPath() const { return m_path; }
+	std::wstring uninstallerPath() const { return m_path.substr(0, m_path.find_last_of('\\') + 1) + std::wstring(UNINSTALL_EXE_NAME); }
+	std::wstring recoveryToolPath() const { return m_path.substr(0, m_path.find_last_of('\\') + 1) + std::wstring(RECOVERY_EXE_NAME); }
+	std::wstring directoryPath() const { return m_path.substr(0, m_path.find_last_of('\\') + 1); }
 private:
 	int m_Major = 0;
 	int m_Minor = 0;

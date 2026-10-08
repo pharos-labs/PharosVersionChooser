@@ -372,7 +372,7 @@ INT_PTR CALLBACK MessageHandler(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
             InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, IDM_CONTEXT_DEVMODE,   L"Developer Mode");
             InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, IDM_CONTEXT_UNINSTALL, L"Uninstall");
             InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, IDM_CONTEXT_REVEAL,    L"Reveal in Explorer");
-#ifdef DESIGNERVERSIONCHOOSER
+#if defined(DESIGNERVERSIONCHOOSER) || defined(MOSAICVERSIONCHOOSER)
             InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, IDM_CONTEXT_RECOVERY, L"Recovery Tool");
 #endif
             TrackPopupMenu(hPopupMenu, TPM_TOPALIGN | TPM_LEFTALIGN, xPos, yPos, 0, hDlg, NULL);
